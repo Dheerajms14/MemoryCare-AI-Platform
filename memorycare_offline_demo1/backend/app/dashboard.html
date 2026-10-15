@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MemoryCare | Caregiver demo</title>
+  <style>
+    :root { font-family: system-ui, sans-serif; color: #172536; background: #f5f8fc; }
+    body { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { color: #153e68; }
+    .card { background: white; border: 1px solid #dbe5ef; border-radius: 12px;
+      padding: 1rem 1.4rem; margin: 1rem 0; }
+    input { padding: .65rem; font: inherit; margin: .3rem; max-width: 100%; }
+    button { background: #125994; color: white; border: 0; border-radius: 7px;
+      padding: .7rem 1.2rem; font: inherit; margin: .3rem; cursor: pointer; }
+    button:focus, input:focus { outline: 3px solid #8dc9fa; }
+    li { margin: .55rem 0; } .hint { color: #465c72; }
+    #message { min-height: 1.4rem; color: #7a2a14; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(245px, 1fr)); gap: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Caregiver dashboard</h1>
+  <p class="hint">Data appears here after the patient device reconnects and synchronizes.</p>
+  <div class="card">
+    <label for="username">Username</label><input id="username" value="caregiver">
+    <label for="password">Password</label><input id="password" type="password" placeholder="demo1234">
+    <button id="login">Sign in</button>
+    <button id="refresh">Refresh</button>
+    <p id="message" role="status"></p>
+  </div>
+  <div class="grid">
+    <section class="card"><h2>Reminders</h2><ul id="reminders"></ul></section>
+    <section class="card"><h2>Memory notes</h2><ul id="memories"></ul></section>
+    <section class="card"><h2>Games</h2><ul id="games"></ul></section>
+  </div>
+  <script>
+    let token = "";
+    const status = (message) => { document.getElementById("message").textContent = message; };
+    function list(id, rows, format) {
+      const ul = document.getElementById(id);
+      ul.replaceChildren();
+      if (!rows.length) {
+        const li = document.createElement("li");
+        li.textContent = "Nothing synchronized yet.";
+        ul.append(li);
+      }
+      for (const row of rows) {
+        const li = document.createElement("li");
+        li.textContent = format(row);
+        ul.append(li);
+      }
+    }
+    async function refresh() {
+      if (!token) { status("Sign in as the caregiver first."); return; }
+      try {
+        const response = await fetch("/caregiver/summary", {
+          headers: { Authorization: "Bearer " + token }
+        });
+        if (!response.ok) throw Error("Refresh failed (" + response.status + ")");
+        const data = await response.json();
+        list("reminders", data.reminders, (r) => r.title + " — " + r.due_at +
+          (r.done ? " (done)" : " (pending)"));
+        list("memories", data.memories, (m) => m.person_name + " (" + m.relationship + "): " + m.note);
+        list("games", data.games, (g) => g.game_type + ": " + g.correct + "/" +
+          g.total + " in " + g.seconds + "s");
+        status("Data synchronized and loaded.");
+      } catch (error) { status(String(error)); }
+    }
+    document.getElementById("refresh").addEventListener("click", refresh);
+    document.getElementById("login").addEventListener("click", async () => {
+      try {
+        const response = await fetch("/auth/login", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("username").value,
+            password: document.getElementById("password").value
+          })
+        });
+        if (!response.ok) throw Error("Incorrect caregiver login");
+        const data = await response.json();
+        if (data.role !== "caregiver") throw Error("Use the caregiver account.");
+        token = data.access_token;
+        await refresh();
+      } catch (error) { status(String(error)); }
+    });
+  </script>
+</body>
+</html>

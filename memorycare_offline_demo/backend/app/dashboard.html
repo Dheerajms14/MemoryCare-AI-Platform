@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MemoryCare | Caregiver Dashboard</title>
+  <style>
+    :root {
+      --navy:#15324b; --teal:#1b7f79; --cream:#f8f5ee; --gold:#e9a23b;
+      --rose:#d96c75; --ink:#203646; --muted:#61747d; --line:#dfe7e5;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      color:var(--ink); background:var(--cream);
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; }
+    button,input,select { font:inherit; }
+    button { cursor:pointer; }
+    .shell { display:grid; grid-template-columns:245px 1fr; min-height:100vh; }
+    aside { background:linear-gradient(175deg,var(--navy),#205f64); color:white; padding:28px 22px; }
+    .brand { display:flex; gap:12px; align-items:center; margin-bottom:36px; }
+    .logo { width:48px; height:48px; display:grid; place-items:center; border-radius:15px;
+      background:linear-gradient(145deg,#30a49b,#14314b); font-size:27px; box-shadow:0 10px 30px #071a2b55; }
+    .brand strong { display:block; font-size:21px; }.brand span { color:#cce2df; font-size:13px; }
+    nav a { display:flex; align-items:center; gap:12px; color:#dbeae8; text-decoration:none;
+      padding:13px 14px; border-radius:13px; margin:5px 0; }
+    nav a.active,nav a:hover { color:white; background:#ffffff18; }
+    .scope { margin-top:35px; padding:16px; border:1px solid #ffffff25; border-radius:16px;
+      color:#d8e6e4; font-size:13px; line-height:1.5; }
+    main { padding:30px clamp(18px,4vw,52px) 60px; overflow:hidden; }
+    header { display:flex; justify-content:space-between; align-items:flex-start; gap:20px; margin-bottom:24px; }
+    h1 { margin:0; font-size:clamp(27px,4vw,38px); color:var(--navy); }
+    h2 { margin:0 0 14px; color:var(--navy); font-size:21px; }
+    p { line-height:1.5; }.muted { color:var(--muted); margin:.35rem 0 0; }
+    .connection { display:flex; align-items:center; gap:8px; background:#e7f4f1; color:#16655f;
+      padding:9px 13px; border-radius:999px; font-weight:700; white-space:nowrap; }
+    .dot { width:9px; height:9px; background:#26a269; border-radius:50%; box-shadow:0 0 0 4px #26a26920; }
+    .login { background:white; border:1px solid var(--line); border-radius:20px; padding:18px;
+      display:flex; flex-wrap:wrap; gap:10px; align-items:end; box-shadow:0 12px 40px #1734490b; }
+    label { display:grid; gap:5px; font-size:13px; color:var(--muted); font-weight:700; }
+    input { border:1px solid var(--line); background:#f5f8f7; border-radius:11px; padding:11px 13px; min-width:175px; }
+    select { border:1px solid var(--line); border-radius:11px; padding:11px; max-width:100%; }
+    .account { margin-top:14px; }.hint { font-size:13px; color:var(--muted); }
+    input:focus,button:focus { outline:3px solid #56b8af55; outline-offset:2px; }
+    button { border:0; border-radius:11px; padding:11px 16px; color:white; background:var(--teal); font-weight:750; }
+    button.secondary { background:#e8f1ef; color:var(--teal); }
+    #message { flex-basis:100%; min-height:1.2rem; margin:0; color:#8b3b45; }
+    .stats { display:grid; grid-template-columns:repeat(5,minmax(135px,1fr)); gap:13px; margin:22px 0; }
+    .stat,.panel { background:white; border:1px solid var(--line); border-radius:19px; box-shadow:0 12px 40px #17344908; }
+    .stat { padding:17px; }.stat .icon { font-size:23px; }.stat strong { display:block; font-size:27px; color:var(--navy); margin:8px 0 2px; }
+    .stat span:last-child { color:var(--muted); font-size:13px; font-weight:650; }
+    .grid { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr); gap:18px; }
+    .panel { padding:20px; min-width:0; }.panel.full { grid-column:1/-1; }
+    .empty { padding:25px; text-align:center; color:var(--muted); background:#f7f9f8; border-radius:14px; }
+    .item { padding:14px 0; border-bottom:1px solid #edf1f0; }.item:last-child { border-bottom:0; }
+    .item-head { display:flex; gap:11px; align-items:flex-start; }.item-head .grow { flex:1; min-width:0; }
+    .badge { display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; font-size:11px;
+      font-weight:800; text-transform:uppercase; letter-spacing:.04em; background:#e7f3f1; color:var(--teal); }
+    .badge.done { background:#eef1f0; color:#71807e; }.badge.medicine { background:#fbe9eb; color:#a64b56; }
+    .badge.appointment { background:#eeeafa; color:#6454a3; }.badge.activity { background:#e7f3f1; color:#1b716b; }
+    .title { font-size:16px; font-weight:800; color:var(--navy); margin-bottom:4px; word-break:break-word; }
+    .meta { color:var(--muted); font-size:13px; }.note { margin:8px 0 0; }
+    .memory-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:13px; }
+    .memory { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:#fbfcfc; }
+    .memory img,.photo-placeholder { height:135px; width:100%; object-fit:cover; background:#e5f1ef; }
+    .photo-placeholder { display:grid; place-items:center; font-size:42px; }.memory .body { padding:14px; }
+    audio { width:100%; height:38px; margin-top:9px; }
+    .game-row { display:grid; grid-template-columns:1.4fr .7fr .7fr .8fr 1.1fr; gap:10px; align-items:center;
+      padding:11px 0; border-bottom:1px solid #edf1f0; }.game-row:last-child{border:0;}
+    .progress { height:9px; border-radius:99px; background:#e9efed; overflow:hidden; margin-top:6px; }
+    .progress i { display:block; height:100%; background:linear-gradient(90deg,var(--teal),#54b9a8); }
+    .hidden { display:none !important; }
+    @media (max-width:1050px) { .stats{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:780px) {
+      .shell{display:block} aside{padding:15px 18px}.brand{margin:0}.brand span,nav,.scope{display:none}
+      main{padding:22px 15px 45px}.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}
+      header{align-items:center}.login{display:grid;grid-template-columns:1fr}.login label,input,.login button{width:100%}
+      .game-row{grid-template-columns:1fr 1fr}.game-row .played{grid-column:1/-1}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand"><div class="logo">🧠</div><div><strong>MemoryCare</strong><span>Caregiver Portal</span></div></div>
+      <nav>
+        <a href="#overview" class="active">▦ Overview</a>
+        <a href="#reminders">◷ Reminders</a>
+        <a href="#memories">▣ Memory Vault</a>
+        <a href="#games">◇ Cognitive Games</a>
+      </nav>
+      <div class="scope">Assistance and engagement platform.<br><br>Not intended for diagnosis, clinical assessment or treatment recommendation.</div>
+    </aside>
+    <main>
+      <header id="overview">
+        <div><h1>Caregiver Dashboard</h1><p class="muted">Review synchronized reminders, familiar memories and cognitive-game activity.</p></div>
+        <div class="connection"><span class="dot"></span> Local server ready</div>
+      </header>
+
+      <form class="login" id="loginForm" aria-label="Caregiver sign in">
+        <label>Username<input id="username" required minlength="3" maxlength="40" autocomplete="username" autocapitalize="none"></label>
+        <label>Password<input id="password" required maxlength="128" type="password" autocomplete="current-password"></label>
+        <button type="submit">Sign in</button>
+        <button id="showRegister" type="button" class="secondary">Create caregiver account</button>
+      </form>
+      <form class="login account hidden" id="registerForm" aria-label="Caregiver registration">
+        <label>Full name<input id="registerName" required minlength="2" maxlength="120" autocomplete="name"></label>
+        <label>Username<input id="registerUser" required pattern="[A-Za-z0-9_.-]{3,40}" maxlength="40" autocomplete="username" autocapitalize="none"></label>
+        <label>Passphrase<input id="registerPassword" required minlength="15" maxlength="128" type="password" autocomplete="new-password"></label>
+        <label>Confirm passphrase<input id="registerConfirm" required minlength="15" maxlength="128" type="password" autocomplete="new-password"></label>
+        <button type="submit">Create account</button>
+        <button id="showLogin" type="button" class="secondary">Back to sign in</button>
+        <p class="hint">Use a unique passphrase of at least 15 characters. No patient access is granted until they share a one-time linking code.</p>
+      </form>
+      <section id="account" class="login account hidden" aria-label="Caregiver account">
+        <strong id="accountName"></strong>
+        <label>Linked patient<select id="patientSelect"><option value="">No linked patients</option></select></label>
+        <button id="refresh" type="button" class="secondary">Refresh data</button>
+        <button id="showPassword" type="button" class="secondary">Change password</button>
+        <button id="logout" type="button">Sign out</button>
+        <form id="linkForm" class="login account">
+          <label>Patient's one-time linking code<input id="linkCode" required pattern="[a-fA-F0-9]{24}" maxlength="24" autocomplete="off"></label>
+          <button type="submit">Link patient</button>
+        </form>
+        <form id="passwordForm" class="login account hidden">
+          <label>Current password<input id="currentPassword" required maxlength="128" type="password" autocomplete="current-password"></label>
+          <label>New passphrase<input id="newPassword" required minlength="15" maxlength="128" type="password" autocomplete="new-password"></label>
+          <label>Confirm passphrase<input id="confirmPassword" required minlength="15" maxlength="128" type="password" autocomplete="new-password"></label>
+          <button type="submit">Save and sign out all sessions</button>
+        </form>
+      </section>
+      <p id="message" role="status" aria-live="polite">Sign in to view patients who have granted you access.</p>
+
+      <section class="stats" aria-label="Patient activity summary">
+        <article class="stat"><span class="icon">⏰</span><strong id="statPending">—</strong><span>Pending reminders</span></article>
+        <article class="stat"><span class="icon">✓</span><strong id="statDone">—</strong><span>Completed reminders</span></article>
+        <article class="stat"><span class="icon">▣</span><strong id="statMemories">—</strong><span>Memory Vault items</span></article>
+        <article class="stat"><span class="icon">◇</span><strong id="statGames">—</strong><span>Games played</span></article>
+        <article class="stat"><span class="icon">◎</span><strong id="statAccuracy">—</strong><span>Game accuracy</span></article>
+      </section>
+
+      <div class="grid">
+        <section class="panel" id="reminders"><h2>Today's support and reminders</h2><div id="reminderList" class="empty">No synchronized information loaded.</div></section>
+        <section class="panel" id="games"><h2>Recent cognitive-game activity</h2><div id="gameList" class="empty">No synchronized information loaded.</div></section>
+        <section class="panel full" id="memories"><h2>Memory Vault</h2><div id="memoryList" class="empty">No synchronized information loaded.</div></section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Access and refresh cookies are HttpOnly. Never store JWTs in browser storage.
+    let profile = null;
+    let refreshInFlight = null;
+    const byId = (id) => document.getElementById(id);
+    const status = (message, ok=false) => { byId("message").textContent = message; byId("message").style.color = ok ? "#16655f" : "#8b3b45"; };
+    const cleanDate = (value) => {
+      const date = new Date(value);
+      return Number.isNaN(date.getTime()) ? value : date.toLocaleString([], {dateStyle:"medium", timeStyle:"short"});
+    };
+    const empty = (container, message) => { container.className="empty"; container.replaceChildren(document.createTextNode(message)); };
+    function element(tag, className, text) {
+      const node=document.createElement(tag); if(className) node.className=className; if(text!==undefined) node.textContent=text; return node;
+    }
+    function renderStats(stats) {
+      byId("statPending").textContent=stats.pending_reminders;
+      byId("statDone").textContent=stats.completed_reminders;
+      byId("statMemories").textContent=stats.memories;
+      byId("statGames").textContent=stats.games;
+      byId("statAccuracy").textContent=stats.accuracy+"%";
+    }
+    function renderReminders(rows) {
+      const root=byId("reminderList"); root.replaceChildren(); root.className="";
+      if(!rows.length){empty(root,"No reminders synchronized yet.");return;}
+      for(const row of rows){
+        const item=element("article","item"), head=element("div","item-head"), grow=element("div","grow");
+        const badge=element("span","badge "+(row.done?"done":row.reminder_type),row.done?"Completed":row.reminder_type);
+        grow.append(element("div","title",row.title),element("div","meta",cleanDate(row.due_at)),badge);
+        head.append(grow); item.append(head);
+        if(row.voice_text) item.append(element("p","note","🔊 "+row.voice_text)); root.append(item);
+      }
+    }
+    function renderGames(rows) {
+      const root=byId("gameList"); root.replaceChildren(); root.className="";
+      if(!rows.length){empty(root,"No game results synchronized yet.");return;}
+      for(const row of rows.slice(0,8)){
+        const line=element("div","game-row");
+        line.append(element("strong","",row.game_type),element("span","badge",row.level),element("span","",row.correct+"/"+row.total),element("span","",row.seconds+" sec"),element("span","meta played",cleanDate(row.played_at)));
+        root.append(line);
+      }
+    }
+    function renderMemories(rows) {
+      const root=byId("memoryList"); root.replaceChildren(); root.className="memory-grid";
+      if(!rows.length){empty(root,"No Memory Vault items synchronized yet.");return;}
+      for(const row of rows){
+        const card=element("article","memory");
+        if(row.photo_url){const image=element("img"); image.src=row.photo_url; image.alt="Photograph for "+row.person_name; card.append(image);}
+        else card.append(element("div","photo-placeholder","👪"));
+        const body=element("div","body"); body.append(element("div","title",row.person_name),element("div","meta",row.relationship));
+        if(row.note) body.append(element("p","note",row.note));
+        if(row.audio_url){const audio=element("audio");audio.controls=true;audio.preload="none";audio.src=row.audio_url;body.append(audio);}
+        card.append(body);root.append(card);
+      }
+    }
+    const csrf = () => decodeURIComponent(document.cookie.split("; ").find(x=>x.startsWith("mc_csrf="))?.slice(8) || "");
+    function options(method="GET",body) {
+      const value={method,credentials:"same-origin",cache:"no-store",headers:{"Content-Type":"application/json"}};
+      if(method!=="GET") value.headers["X-CSRF-Token"]=csrf();
+      if(body!==undefined) value.body=JSON.stringify(body);
+      return value;
+    }
+    async function renew() {
+      if(refreshInFlight) return refreshInFlight;
+      const rotate=async()=>{
+        // Another tab may already have rotated the shared cookie while we waited.
+        const check=await fetch("/auth/me",options());
+        if(check.ok) return true;
+        if(!csrf()) return false;
+        return (await fetch("/auth/web/refresh",options("POST"))).ok;
+      };
+      refreshInFlight=(navigator.locks ? navigator.locks.request("memorycare-web-refresh",rotate) : rotate());
+      try { return await refreshInFlight; } finally { refreshInFlight=null; }
+    }
+    async function api(path,method="GET",body,retry=true) {
+      let response=await fetch(path,options(method,body));
+      if(response.status===401 && retry && await renew()) response=await fetch(path,options(method,body));
+      const data=await response.json();
+      if(!response.ok){
+        if(response.status===401 && retry) signedOut();
+        const detail=data.detail;
+        throw Error(typeof detail==="string" ? detail : Array.isArray(detail) ? detail.map(x=>x.msg).join("; ") : "Request failed ("+response.status+").");
+      }
+      return data;
+    }
+    function clearData() {
+      for(const key of ["statPending","statDone","statMemories","statGames","statAccuracy"]) byId(key).textContent="—";
+      for(const key of ["reminderList","gameList","memoryList"]) empty(byId(key),"No synchronized information loaded.");
+    }
+    function signedOut() {
+      profile=null;clearData();
+      byId("account").classList.add("hidden");byId("registerForm").classList.add("hidden");byId("loginForm").classList.remove("hidden");
+      byId("passwordForm").classList.add("hidden");byId("patientSelect").replaceChildren();
+    }
+    async function refresh() {
+      clearData();
+      const patient=byId("patientSelect").value;
+      if(!profile || !patient){status("Ask the patient for a linking code from Settings → Caregiver access.",true);return;}
+      const data=await api("/caregiver/summary?patient_id="+encodeURIComponent(patient));
+      renderStats(data.stats);renderReminders(data.reminders);renderMemories(data.memories);renderGames(data.games);
+      status("Latest synchronized data loaded at "+new Date().toLocaleTimeString()+".",true);
+    }
+    async function loadAccount(value) {
+      if(value.role!=="caregiver") throw Error("Use a caregiver account.");
+      profile=value;
+      byId("loginForm").classList.add("hidden");byId("registerForm").classList.add("hidden");byId("account").classList.remove("hidden");
+      byId("accountName").textContent="Welcome, "+profile.display_name;
+      const data=await api("/caregiver/patients");const select=byId("patientSelect"),previous=select.value;select.replaceChildren();
+      for(const patient of data.patients){const option=element("option","",patient.display_name+" ("+patient.username+")");option.value=patient.user_id;select.append(option);}
+      if(data.patients.some(p=>p.user_id===previous)) select.value=previous;
+      if(!data.patients.length){const option=element("option","","No linked patients");option.value="";select.append(option);}
+      await refresh();
+    }
+    function handle(form,action) {
+      byId(form).addEventListener("submit",async event=>{
+        event.preventDefault();const button=event.currentTarget.querySelector('button[type="submit"]');button.disabled=true;
+        try{await action();}catch(error){status(error instanceof Error?error.message:"Unable to connect.");}
+        finally{button.disabled=false;for(const input of byId(form).querySelectorAll('input[type="password"]')) input.value="";}
+      });
+    }
+    handle("loginForm",async()=>{
+      status("Signing in…",true);
+      const value=await api("/auth/web/login","POST",{username:byId("username").value.trim(),password:byId("password").value,role:"caregiver"},false);
+      await loadAccount(value);
+    });
+    handle("registerForm",async()=>{
+      if(byId("registerPassword").value!==byId("registerConfirm").value) throw Error("Passphrases do not match.");
+      await api("/auth/register","POST",{username:byId("registerUser").value.trim(),display_name:byId("registerName").value.trim(),password:byId("registerPassword").value,role:"caregiver"},false);
+      byId("username").value=byId("registerUser").value.trim();signedOut();status("Account created. Sign in and link a patient.",true);
+    });
+    handle("linkForm",async()=>{await api("/caregiver/link","POST",{code:byId("linkCode").value.trim()});byId("linkCode").value="";await loadAccount(profile);});
+    handle("passwordForm",async()=>{
+      if(byId("newPassword").value!==byId("confirmPassword").value) throw Error("Passphrases do not match.");
+      await api("/auth/change-password","POST",{current_password:byId("currentPassword").value,new_password:byId("newPassword").value});
+      signedOut();status("Password changed. All sessions were signed out.",true);
+    });
+    byId("showRegister").addEventListener("click",()=>{byId("loginForm").classList.add("hidden");byId("registerForm").classList.remove("hidden");});
+    byId("showLogin").addEventListener("click",signedOut);
+    byId("showPassword").addEventListener("click",()=>byId("passwordForm").classList.toggle("hidden"));
+    byId("refresh").addEventListener("click",()=>refresh().catch(error=>status(error.message)));
+    byId("patientSelect").addEventListener("change",()=>refresh().catch(error=>status(error.message)));
+    byId("logout").addEventListener("click",async()=>{
+      try{await api("/auth/logout","POST");signedOut();status("Signed out.",true);}
+      catch(error){clearData();status("Sign-out could not reach the server. Close this tab and sign out once connected. "+error.message);}
+    });
+    api("/auth/me").then(loadAccount).catch(()=>{signedOut();status("Sign in to view patients who have granted you access.",true);});
+  </script>
+</body>
+</html>

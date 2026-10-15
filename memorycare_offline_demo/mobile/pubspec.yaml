@@ -1,0 +1,26 @@
+name: memorycare_offline_demo
+description: Elderly-friendly multilingual and voice-enabled MemoryCare offline application.
+publish_to: none
+version: 2.1.0+3
+environment:
+  sdk: ">=3.4.0 <4.0.0"
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.4.4
+  path: ^1.9.1
+  http: ^1.6.0
+  uuid: ^4.6.0
+  flutter_tts: ^4.2.5
+  speech_to_text: ^7.4.0
+  record: ^7.1.1
+  audioplayers: ^6.8.1
+  image_picker: ^1.1.2
+  path_provider: ^2.1.5
+  flutter_secure_storage: ^11.2.0
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+flutter:
+  uses-material-design: true

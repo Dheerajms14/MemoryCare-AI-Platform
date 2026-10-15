@@ -1,0 +1,43 @@
+String authText(String language, String key) => _authTexts[language]?[key] ?? _authTexts['en']![key] ?? key;
+
+const _authTexts = <String, Map<String, String>>{
+  'en': {
+    'patient': 'Patient', 'caregiver': 'Caregiver', 'create': 'Create account', 'login': 'Sign in',
+    'name': 'Full name', 'confirm': 'Confirm passphrase', 'passphrase': 'Passphrase',
+    'hint': 'Use 15–128 characters. A memorable sentence is easier than a short PIN.',
+    'new': 'New to MemoryCare? Create an account', 'existing': 'Already registered? Sign in',
+    'security': 'Individual accounts • protected token storage • consent-based caregiver access',
+    'logout': 'Sign out', 'link': 'Caregiver access', 'code': 'Create linking code',
+    'registered': 'Account created. You can now sign in.', 'invalid': 'Please check your form fields.',
+    'match': 'Passphrases do not match.', 'required': 'This field is required.',
+    'short': 'Use at least 15 characters.', 'remove': 'Remove access',
+    'change': 'Change passphrase', 'current': 'Current passphrase', 'save': 'Save',
+    'offline_logout': 'Signed out on this phone. The server session could not be revoked while offline.',
+  },
+  'kn': {
+    'patient': 'ರೋಗಿ', 'caregiver': 'ಆರೈಕೆದಾರ', 'create': 'ಖಾತೆ ರಚಿಸಿ', 'login': 'ಲಾಗಿನ್',
+    'name': 'ಪೂರ್ಣ ಹೆಸರು', 'confirm': 'ಪಾಸ್‌ಫ್ರೇಸ್ ದೃಢಪಡಿಸಿ', 'passphrase': 'ಪಾಸ್‌ಫ್ರೇಸ್',
+    'hint': '15–128 ಅಕ್ಷರಗಳನ್ನು ಬಳಸಿ. ನೆನಪಿಡಲು ಸುಲಭವಾದ ವಾಕ್ಯವನ್ನು ಆರಿಸಿ.',
+    'new': 'ಹೊಸ ಬಳಕೆದಾರರೇ? ಖಾತೆ ರಚಿಸಿ', 'existing': 'ಖಾತೆ ಇದೆಯೇ? ಲಾಗಿನ್ ಮಾಡಿ',
+    'security': 'ಪ್ರತ್ಯೇಕ ಖಾತೆಗಳು • ಸುರಕ್ಷಿತ ಟೋಕನ್ ಸಂಗ್ರಹ • ಅನುಮತಿಯೊಂದಿಗೆ ಆರೈಕೆದಾರರ ಪ್ರವೇಶ',
+    'logout': 'ಲಾಗ್ ಔಟ್', 'link': 'ಆರೈಕೆದಾರರ ಪ್ರವೇಶ', 'code': 'ಲಿಂಕ್ ಕೋಡ್ ರಚಿಸಿ',
+    'registered': 'ಖಾತೆ ರಚಿಸಲಾಗಿದೆ. ಈಗ ಲಾಗಿನ್ ಮಾಡಿ.', 'invalid': 'ನಮೂನೆಯ ಮಾಹಿತಿಯನ್ನು ಪರಿಶೀಲಿಸಿ.',
+    'match': 'ಪಾಸ್‌ಫ್ರೇಸ್‌ಗಳು ಹೊಂದಿಕೆಯಾಗುತ್ತಿಲ್ಲ.', 'required': 'ಈ ಮಾಹಿತಿ ಅಗತ್ಯ.',
+    'short': 'ಕನಿಷ್ಠ 15 ಅಕ್ಷರಗಳನ್ನು ಬಳಸಿ.', 'remove': 'ಪ್ರವೇಶ ತೆಗೆದುಹಾಕಿ',
+    'change': 'ಪಾಸ್‌ಫ್ರೇಸ್ ಬದಲಾಯಿಸಿ', 'current': 'ಪ್ರಸ್ತುತ ಪಾಸ್‌ಫ್ರೇಸ್', 'save': 'ಉಳಿಸಿ',
+    'offline_logout': 'ಫೋನ್‌ನಲ್ಲಿ ಲಾಗ್ ಔಟ್ ಆಗಿದೆ. ಆಫ್‌ಲೈನ್‌ನಲ್ಲಿ ಸರ್ವರ್ ಸೆಷನ್ ರದ್ದುಪಡಿಸಲಾಗಲಿಲ್ಲ.',
+  },
+  'hi': {
+    'patient': 'रोगी', 'caregiver': 'देखभालकर्ता', 'create': 'खाता बनाएँ', 'login': 'साइन इन',
+    'name': 'पूरा नाम', 'confirm': 'पासफ़्रेज़ की पुष्टि करें', 'passphrase': 'पासफ़्रेज़',
+    'hint': '15–128 अक्षर रखें। याद रखने योग्य वाक्य चुनें।',
+    'new': 'नए उपयोगकर्ता? खाता बनाएँ', 'existing': 'खाता है? साइन इन करें',
+    'security': 'अलग खाते • सुरक्षित टोकन संग्रह • सहमति-आधारित देखभालकर्ता पहुँच',
+    'logout': 'साइन आउट', 'link': 'देखभालकर्ता पहुँच', 'code': 'लिंकिंग कोड बनाएँ',
+    'registered': 'खाता बन गया। अब साइन इन करें।', 'invalid': 'कृपया फ़ॉर्म की जानकारी जाँचें।',
+    'match': 'पासफ़्रेज़ मेल नहीं खाते।', 'required': 'यह जानकारी ज़रूरी है।',
+    'short': 'कम से कम 15 अक्षर रखें।', 'remove': 'पहुँच हटाएँ',
+    'change': 'पासफ़्रेज़ बदलें', 'current': 'वर्तमान पासफ़्रेज़', 'save': 'सहेजें',
+    'offline_logout': 'फोन पर साइन आउट हो गया। ऑफ़लाइन सर्वर सत्र रद्द नहीं किया जा सका।',
+  },
+};
